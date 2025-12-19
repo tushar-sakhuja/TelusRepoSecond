@@ -1,0 +1,40 @@
+name: Expo EAS Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: EAS Build (Android)
+        run: eas build --platform android --profile production --non-interactive
+
+      # Optional iOS
+      # - name: EAS Build (iOS)
+      #   run: eas build --platform ios --profile production --non-interactive
+
+
+
